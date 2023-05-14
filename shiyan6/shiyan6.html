@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .childGirl{
+            border: 1px dotted black;
+            width: 350px;
+            height: 200px;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 5px;
+            display: inline-block;
+        }
+        .childBoy{
+            display: inline-block;
+            width: 350px;
+            height: 200px;
+            padding: 10px;
+            border: 1px solid #000;
+            border-radius: 10px;
+            margin: 5px;
+        }
+        #app{
+            margin: 0 auto;
+            width: 800px;
+            height: 350px;
+            border: 15px solid #cacaca;
+            text-align: center;
+        }
+        button,input{
+            height: 24px;
+            border-radius: 10px;
+            border: 1px dashed #00e;
+        }
+        img{
+            width: 36px;
+            height: 36px;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h1>友谊聊吧</h1>
+        <hr>
+        <girl></girl>
+        <boy></boy>
+    </div>
+    <script src="./vue.js"></script>
+    <script>
+        var bus = new Vue()
+        Vue.component('girl',{
+            template:`
+            <div class="childGirl">
+            <h1><img src="./girl.jpg" alt="">我是老姐</h1>
+            <input type="text" v-model='girlInput'>
+            <input type="button" value="发送消息" @click='sendToBoy'><br>
+            <textarea id="girl" cols="32" rows="4"></textarea>
+        </div>`,
+        data:function(){
+            return {
+                girlInput:''
+            }
+        },
+        methods:{
+            sendToBoy:function(){
+                bus.$emit('ins',this.girlInput);
+                this.girlInput = '';
+            }
+        },
+        mounted:function(){
+            bus.$on('ins1',function(data){
+                var msgdata = (new Date()).toLocaleString();
+                document.getElementById('girl').innerHTML +=msgdata +':【' +data+'】\n'
+            })
+        }
+        })
+        
+
+
+
+
+        Vue.component('boy',{
+            template:`
+            <div class="childBoy">
+            <h1><img src="./boy.jpg" alt="">我是老弟</h1>
+            <input type="text" v-model='boyInput'>
+            <input type="button" value="发送消息" @click='sendToGirl'><br>
+            <textarea id="boy" cols="32" rows="4"></textarea>
+        </div>`,
+        data:function(){
+            return {
+                boyInput:''
+            }
+        },
+        mounted:function(){
+            bus.$on('ins',function(data){
+                var msgdata = (new Date()).toLocaleString();
+                document.getElementById('boy').innerHTML +=msgdata +':【' +data+'】\n'
+            })
+        },
+        methods:{
+            sendToGirl:function(){
+                bus.$emit('ins1',this.boyInput);
+                this.boyInput = '';
+            }
+        }
+        
+        })
+        var vm = new Vue({
+            el:'#app'
+        })
+    </script>
+</body>
+</html>
